@@ -22,24 +22,24 @@
 		<property name="password" value="${jdbc.password}" />
 		
 		<!--每多少秒检查所有连接池中的空闲连接。Default: 0 --> 		
-		<property name="idleConnectionTestPeriod"  value="${jdbc.idleConnectionTestPeriod}"/>
+		<property name="idleConnectionTestPeriod"  value="${jdbc.idleConnectionTestPeriod:60}"/>
 		
 		<!--最大空闲时间,多少秒内未使用则连接被丢弃。若为0则永不丢弃。Default: 0 -->	
-		<property name="maxIdleTime" value="${jdbc.maxIdleTime}"/>
+		<property name="maxIdleTime" value="${jdbc.maxIdleTime:0}"/>
 		
 		<!-- 是否连接sql -->
-		<property name="testConnectionOnCheckin" value="${jdbc.testConnectionOnCheckin}"/>
+		<property name="testConnectionOnCheckin" value="${jdbc.testConnectionOnCheckin:true}"/>
 		
 		<!-- 连接测试sql语句 -->
 		<property name="preferredTestQuery" value="${jdbc.preferredTestQuery}"/> 
 		<!-- 连接池中最小连接数 -->
-		<property name="minPoolSize" value="${jdbc.minPoolSize}"/>
+		<property name="minPoolSize" value="${jdbc.minPoolSize:80}"/>
 
 		<!--连接池中保留的最大连接数。Default: 15 --> 
-		<property name="maxPoolSize" value="${jdbc.maxPoolSize}"/>	
+		<property name="maxPoolSize" value="${jdbc.maxPoolSize:500}"/>	
 		
 		<!-- 获取连接超时设置  默认是一直等待单位毫秒 -->
-		<property name="checkoutTimeout" value="${jdbc.checkoutTimeout}"/>  	
+		<property name="checkoutTimeout" value="${jdbc.checkoutTimeout:3000}"/>  	
 	</bean>
 	
 	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">

@@ -66,8 +66,9 @@ public  class FreeDaoMybatisImpl implements FreeDao {
 	private SqlSession getNativeSqlSession(){
 		SqlSession sqlSession = getSqlSession();
 		if(sqlSession instanceof SqlSessionTemplate){
-			sqlSession.getConnection();//调用一下代理方法让该连接退回到连接池.(import)
-			return ((SqlSessionTemplate) sqlSession).getSqlSessionFactory().openSession(true);
+			System.out.println("SqlSessionTemplate 拿到的连接:"+sqlSession.getConnection());
+			sqlSession.close();
+			return ((SqlSessionTemplate) sqlSession).getSqlSessionFactory().openSession();
 		}else if(sqlSession instanceof DefaultSqlSession) {
 			return sqlSession;
 		}else if(sqlSession instanceof SqlSessionManager){
@@ -138,6 +139,7 @@ public  class FreeDaoMybatisImpl implements FreeDao {
 	public boolean insert(String sqlId, Object... parameters) throws Exception {
 		SqlSession session = getNativeSqlSession();
 		Connection connection = session.getConnection();
+		System.out.println("SqlSession        拿到的连接:"+connection);
 		try {
 			Map<String, ArrayList<Object[]>> sqlParamsMapper = new HashMap<String, ArrayList<Object[]>>();
 			for(Object parameter : parameters){	
@@ -175,12 +177,17 @@ public  class FreeDaoMybatisImpl implements FreeDao {
 
 	@Override
 	public Object insertReadKey(String sqlId, Object parameter)throws Exception {
+		long tag = System.currentTimeMillis();
 		SqlSession session = getNativeSqlSession();
+		System.out.println("获取[Session]连接耗时:"+(System.currentTimeMillis() - tag));
+		tag  = System.currentTimeMillis();
 		Connection connection = session.getConnection();
+		System.out.println("获取[connection]连接耗时:"+(System.currentTimeMillis() - tag));
+		System.out.println("SqlSession        拿到的连接:"+connection);
 		try {
 			long start = System.currentTimeMillis();
 			MyBatisSql sqls=  MyBatisSqlUtils.getMyBatisSql(session, sqlId, BeanUtils.transBean2Map(parameter));
-			System.out.println("parseSql:" +( System.currentTimeMillis() -start)); 
+			Logger.getLogger("net.kiigo.core.dao.impl.FreeDaoMybatisImpl").log(Level.FINER,"SQL parse elapsed time:" +(System.currentTimeMillis() -start)+" milliseconds"); 
 			
 			start = System.currentTimeMillis();
 			PreparedStatement preparedStatement = connection.prepareStatement(sqls.getSql(),PreparedStatement.RETURN_GENERATED_KEYS);
@@ -188,14 +195,14 @@ public  class FreeDaoMybatisImpl implements FreeDao {
 			for(int index=0;index<paramObjs.length;index++){
 				preparedStatement.setObject(index+1, paramObjs[index]);
 			}
+			Object pk = null;
 			preparedStatement.execute();
 			ResultSet rs = preparedStatement.getGeneratedKeys();  
-			System.out.println("exqutSql:" +( System.currentTimeMillis() -start));
 			if(rs.next()){
-				return rs.getInt(1);
+				pk = rs.getObject(1);
 			}
-			
-			return null;
+			Logger.getLogger("net.kiigo.core.dao.impl.FreeDaoMybatisImpl").log(Level.FINER,"SQL execute elapsed time:" +(System.currentTimeMillis() -start)+" milliseconds");
+			return pk;
 		}finally{
 			closeConnection(connection);
 			closeSession(session);
@@ -214,7 +221,7 @@ public  class FreeDaoMybatisImpl implements FreeDao {
 	}
 	private static final void closeConnection(Connection connection){
 		try {
-			if(connection != null)
+			if(connection != null && connection.getTransactionIsolation() == Connection.TRANSACTION_NONE)
 				connection.close();
 		} catch (SQLException e) {
 			Logger.getLogger("net.kiigo.core.dao.impl.FreeDaoMybatisImpl").log(Level.WARNING, "the Connection close error", e);

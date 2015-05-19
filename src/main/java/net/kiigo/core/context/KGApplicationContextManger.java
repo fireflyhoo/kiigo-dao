@@ -41,7 +41,7 @@ public class KGApplicationContextManger  {
 			return;
 		}		
 		if(!initd){
-			 _context = new ClassPathXmlApplicationContext("classpath*:web/applicationContext-*.xml");
+			 _context = new ClassPathXmlApplicationContext("classpath*:spring/db/applicationContext-*.xml");
 		}
 		initd = true;
 		

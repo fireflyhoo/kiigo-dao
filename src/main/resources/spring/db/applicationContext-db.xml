@@ -38,6 +38,10 @@
 	</bean>
 
 	<tx:annotation-driven transaction-manager="txManager" />
+	
+	<bean class="org.springframework.jdbc.core.JdbcTemplate">
+		<constructor-arg index="0" ref="dataSource"/>
+	</bean>
 
 	<!-- def session factory -->
 	<bean id="def_session_factory" class="org.mybatis.spring.SqlSessionFactoryBean">

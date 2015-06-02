@@ -12,9 +12,6 @@ public class MYSQLDialect implements Dialect {
 
 	public String getPageSql(String sql, long offset, int pagesize) {
 		StringBuffer sb = new StringBuffer();
-//		sb.append("SELECT * from ( ").append(sql).append(")")
-//				.append(" Pagination limit ").append(offset).append(",")
-//				.append(pagesize);
 		sb.append("").append(sql).append("")
 				.append("  limit ").append(offset).append(",")
 				.append(pagesize);
@@ -22,9 +19,14 @@ public class MYSQLDialect implements Dialect {
 		return sb.toString();
 	}
 
-	public String getCountSql() {
-		// TODO Auto-generated method stub
-		return null;
+	@Override
+	public String getCountSql(String sql) {
+		int index = sql.toUpperCase().indexOf(" FROM ");
+		if(index == -1){
+			throw new RuntimeException(String.format("SQL[%s],不存在from 关键字. ",sql));
+		}
+		return "SELECT COUNT(1) " + sql.substring(index);
 	}
+	
 
 }

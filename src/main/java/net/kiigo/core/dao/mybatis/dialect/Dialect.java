@@ -40,7 +40,7 @@ public interface Dialect {
 
 	public String getPageSql(String sql, long offset, int pagesize);
 	
-	public String getCountSql();
+	public String getCountSql(String sql);
 
 	public static class Builder {
 		Type type;

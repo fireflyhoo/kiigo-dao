@@ -28,9 +28,7 @@ public class SQLSERVERDialect implements Dialect {
 			throw new RuntimeException("不支持不带from和order by的分页查询语句");
 		}
 		String select = querySelect.substring(0, querySelect.indexOf(" from "));
-		// while (select.endsWith(" ")) {
-		// select.substring(0, select.length() - 1);
-		// }
+		
 		result[0] = select;
 		result[1] = querySelect.substring(querySelect.indexOf(" from "),
 				querySelect.indexOf(" order by "));
@@ -38,9 +36,13 @@ public class SQLSERVERDialect implements Dialect {
 		return result;
 	}
 
-	public String getCountSql() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
+	@Override
+	public String getCountSql(String sql) {
+		int index = sql.toUpperCase().indexOf(" FROM ");
+		if(index == -1){
+			throw new RuntimeException(String.format("SQL[%s],不存在from 关键字. ",sql));
+		}
+		return "SELECT COUNT(1) " + sql.substring(index);
+	}
 }

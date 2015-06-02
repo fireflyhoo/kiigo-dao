@@ -59,7 +59,7 @@ public class PaginationInterceptor implements Interceptor {
            MappedStatement mappedStatement = (MappedStatement)metaStatementHandler.getValue("delegate.mappedStatement");  
            BoundSql boundSql = (BoundSql) metaStatementHandler.getValue("delegate.boundSql");
            
-           String count_originalSql =  new StringBuffer("select count(1) from (").append(originalSql).append(") _pages where 1=1").toString();
+           String count_originalSql = dialect.getCountSql(originalSql);
           
            PreparedStatement preparedStatement = connection.prepareStatement(count_originalSql);
            

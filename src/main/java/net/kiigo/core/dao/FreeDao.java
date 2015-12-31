@@ -32,6 +32,25 @@ public interface FreeDao {
 	public <T>PageCollection<T> query(String sqlId,Object parameter ,long offset,int pageSize,Class<T> ...T )throws Exception;
 	
 	
+	/***
+	 * 
+	 *分页查询结果. <br/> 
+	 * 
+	 * @author Coollf
+	 * @date: 2015年12月25日 下午4:40:54
+	 * @version 1.0
+	 *
+	 * @param sqlId
+	 * @param parameter
+	 * @param pageIndex
+	 * @param pageSize
+	 * @param T
+	 * @return
+	 * @throws Exception
+	 */
+	public <T>PageCollection<T> queryPage(String sqlId,Object parameter ,int pageIndex,int pageSize,Class<T> T)throws Exception;
+	
+	
 	/**
 	 * 查询单个对象
 	 * @param sqlId

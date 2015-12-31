@@ -54,4 +54,9 @@
 		scope="prototype">
 		<constructor-arg index="0" ref="def_session_factory" />
 	</bean>
+	
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.*.mapper" />
+		<property name="sqlSessionFactoryBeanName" value="def_session_factory" />
+	</bean>
 </beans>

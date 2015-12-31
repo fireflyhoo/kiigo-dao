@@ -28,7 +28,7 @@
 		<property name="preferredTestQuery" value="${jdbc.preferredTestQuery}" />
 		<property name="initialPoolSize" value="${jdbc.minPoolSize:80}" />
 		<property name="minPoolSize" value="${jdbc.minPoolSize:80}" />
-		<property name="maxPoolSize" value="${jdbc.maxPoolSize:500}" />
+		<property name="maxPoolSize" value="${jdbc.maxPoolSize:200}" />
 		<property name="checkoutTimeout" value="${jdbc.checkoutTimeout:3000}" />
 	</bean>
 
